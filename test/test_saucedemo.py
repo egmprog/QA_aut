@@ -94,3 +94,40 @@ def test_listar_primer_producto_nombre_precio(driver):
 
     print(f"\nPrimer producto: {first_item_name.text.strip()} | Precio: {first_item_price.text.strip()}")
 
+def test_agregar_producto_y_validar_carrito(driver):
+    """
+    - Login
+    - Agrega primer producto
+    - Verifica contador del carrito
+    - Navega al carrito
+    - Verifica ítem en carrito
+    """
+    wait = WebDriverWait(driver, 10)
+    login(driver)
+
+    # Obtener nombre del primer producto antes de agregar
+    first_item_name = wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".inventory_item:first-child .inventory_item_name"))
+    ).text.strip()
+
+    add_first_btn = wait.until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, ".inventory_item:first-child button.btn_inventory"))
+    )
+    add_first_btn.click()
+
+    # Verificar badge incrementado
+    cart_badge = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "shopping_cart_badge")))
+    assert cart_badge.text.strip() == "1", \
+        f"El contador del carrito debería ser 1 y es {cart_badge.text.strip()}"
+
+    # Ir al carrito
+    cart_link = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "shopping_cart_link")))
+    cart_link.click()
+
+    wait.until(EC.url_contains("/cart.html"))
+    assert "/cart.html" in driver.current_url, "No se abrió la página del carrito."
+
+    # Verificar producto añadido
+    cart_item_name = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "inventory_item_name"))).text.strip()
+    assert cart_item_name == first_item_name, \
+        f"Producto en carrito incorrecto. Esperado: {first_item_name} | Obtenido: {cart_item_name}"
