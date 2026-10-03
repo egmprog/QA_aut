@@ -72,3 +72,25 @@ def test_login_exitoso_y_validaciones_inventario(driver):
     products = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item")))
     assert len(products) > 0, "No se encontraron productos en el inventario."
 
+def test_listar_primer_producto_nombre_precio(driver):
+    """
+    - Login
+    - Valida presencia de productos
+    - Lista nombre/precio del primero
+    """
+    wait = WebDriverWait(driver, 10)
+    login(driver)
+
+    first_item_name = wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".inventory_item:first-child .inventory_item_name"))
+    )
+    first_item_price = wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".inventory_item:first-child .inventory_item_price"))
+    )
+
+    assert first_item_name.text.strip() != "", "El nombre del primer producto está vacío."
+    assert first_item_price.text.strip().startswith("$"), \
+        f"Precio inválido del primer producto: {first_item_price.text.strip()}"
+
+    print(f"\nPrimer producto: {first_item_name.text.strip()} | Precio: {first_item_price.text.strip()}")
+
