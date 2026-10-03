@@ -46,4 +46,29 @@ def login(driver):
     assert products_title.text.strip() == "Products", \
         f"Se esperaba 'Products' y se obtuvo '{products_title.text.strip()}'"
 
+# despues de login, validar elementos clave de la página de inventario
+def test_login_exitoso_y_validaciones_inventario(driver):
+    """
+    - Navegar a login
+    - Ingresar credenciales válidas
+    - Validar login exitoso: URL /inventory.html + Products/Swag Labs
+    - Verificar elementos clave: título, menú, filtro y productos visibles
+    """
+    wait = WebDriverWait(driver, 10)
+    login(driver)
+
+    # Validar título de página de inventario
+    inventory_title = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "title")))
+    assert inventory_title.text.strip() == "Products", \
+        f"Título incorrecto. Esperado: Products | Obtenido: {inventory_title.text.strip()}"
+
+    # Validar elementos importantes de UI
+    menu_button = wait.until(EC.visibility_of_element_located((By.ID, "react-burger-menu-btn")))
+    sort_filter = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "product_sort_container")))
+    assert menu_button.is_displayed(), "El menú no está visible."
+    assert sort_filter.is_displayed(), "El filtro no está visible."
+
+    # Validar presencia de productos (al menos uno)
+    products = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item")))
+    assert len(products) > 0, "No se encontraron productos en el inventario."
 
