@@ -4,8 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.driver_factory import get_driver
 
-# información para el test
+
 BASE_URL = "https://www.saucedemo.com/"
+
+# datos para el login
 VALID_USER = "standard_user"
 VALID_PASS = "secret_sauce"
 
@@ -21,7 +23,7 @@ def login(driver):
     wait = WebDriverWait(driver, 10)
     driver.get(BASE_URL)
 
-    # Espera explícita: que se vea el login
+    # Espera explícita: login visible
     username_input = wait.until(EC.visibility_of_element_located((By.ID, "user-name")))
     password_input = wait.until(EC.visibility_of_element_located((By.ID, "password")))
     login_button = wait.until(EC.element_to_be_clickable((By.ID, "login-button")))
@@ -46,9 +48,10 @@ def login(driver):
     assert products_title.text.strip() == "Products", \
         f"Se esperaba 'Products' y se obtuvo '{products_title.text.strip()}'"
 
-# despues de login, validar elementos clave de la página de inventario
+
 def test_login_exitoso_y_validaciones_inventario(driver):
     """
+    PRUEBA 1
     - Navegar a login
     - Ingresar credenciales válidas
     - Validar login exitoso: URL /inventory.html + Products/Swag Labs
@@ -72,8 +75,10 @@ def test_login_exitoso_y_validaciones_inventario(driver):
     products = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item")))
     assert len(products) > 0, "No se encontraron productos en el inventario."
 
+
 def test_listar_primer_producto_nombre_precio(driver):
     """
+    PRUEBA 2
     - Login
     - Valida presencia de productos
     - Lista nombre/precio del primero
@@ -94,8 +99,10 @@ def test_listar_primer_producto_nombre_precio(driver):
 
     print(f"\nPrimer producto: {first_item_name.text.strip()} | Precio: {first_item_price.text.strip()}")
 
+
 def test_agregar_producto_y_validar_carrito(driver):
     """
+    PRUEBA 3
     - Login
     - Agrega primer producto
     - Verifica contador del carrito

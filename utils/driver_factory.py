@@ -1,19 +1,28 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+import os
 
-
-def get_driver(headless: bool = False):
+def get_driver(headless=False):
+    
+    #Crea una instancia de ChromeDriver    
+    # WebDriver: Instancia del driver de Chrome
+    
     options = webdriver.ChromeOptions()
+    
     if headless:
-        options.add_argument("--headless=new")
-    options.add_argument("--start-maximized")
-    options.add_argument("--disable-notifications")
-    options.add_argument("--window-size=1920,1080")
-
-    driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()),
-        options=options
+        options.add_argument("--headless")
+    
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    
+    
+    driver_path = os.path.join(
+        os.path.dirname(__file__),
+        "../drivers/chromedriver.exe"
     )
-    driver.implicitly_wait(2)
+    
+    service = Service(driver_path)
+    driver = webdriver.Chrome(service=service, options=options)
+    
     return driver
