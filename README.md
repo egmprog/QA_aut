@@ -12,7 +12,7 @@ Automatizar flujos básicos de navegación web en https://www.saucedemo.com con 
 
 ## Estructura
 ```text
-pre-entrega-final/
+QA_aut/
 ├── drivers/
 │   └── chromedriver.exe
 ├── reports/
@@ -55,9 +55,4 @@ Generar reporte en HTML:
 
 ```bash
 pytest test/test_saucedemo.py -v --html=reports/reporte.html
-```
-
-> Si querés exactamente el comando solicitado:
-```bash
-pytest QA_aut/test_saucedemo.py -v --html=reporte.html
 ```
